@@ -21,7 +21,7 @@ Avant d'exécuter le projet, vous devez avoir les éléments suivants :
     ```bash
     git clone git@github.com:Anthr0pophobe/TwitchAPI.git
     ```
-   
+
 2. Accédez au répertoire du projet :
     ```bash
     cd twitchApi
@@ -46,3 +46,18 @@ Pour démarrer le serveur localement, utilisez la commande suivante :
 
 ```bash
 npm run dev
+```
+
+Cela lancera le serveur Express sur http://localhost:3000.
+
+Accéder à la Documentation Swagger
+Une fois le serveur démarré, vous pouvez accéder à la documentation de l'API générée par Swagger à l'adresse suivante :
+
+```bash
+http://localhost:3000/api/docs
+``` 
+
+Cette page contient la documentation interactive de toutes les routes disponibles dans l'API, incluant les endpoints pour récupérer les informations d'un utilisateur Twitch et son planning de diffusion.
+
+
+
