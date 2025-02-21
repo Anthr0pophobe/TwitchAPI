@@ -1,8 +1,6 @@
 import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
 import { getTokenFromDB } from "./app/middlewares/mongo";
-import { setCachedToken, getCachedToken } from "./app/middlewares/tokenCache";
+import { setCachedToken } from "./app/middlewares/tokenCache";
 import apiRoutes from "./app/routes/index";
 
 const app = express();
