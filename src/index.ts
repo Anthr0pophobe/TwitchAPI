@@ -2,9 +2,11 @@ import express from "express";
 import { getTokenFromDB } from "./app/middlewares/mongo";
 import { setCachedToken } from "./app/middlewares/tokenCache";
 import apiRoutes from "./app/routes/index";
+import cors from "cors";
 
 const app = express();
-const port = 3000;
+const port = 3008   ;
+app.use(cors());
 
 // load token from mongo
 const loadToken = async () => {
