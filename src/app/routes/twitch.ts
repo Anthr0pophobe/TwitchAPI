@@ -58,6 +58,19 @@ router.get("/user/:username", twitchController.getUserInfos);
 
 /**
  * @swagger
+ * /twitch/schedule:
+ *   get:
+ *     summary: Récupère statiquement les infos des utilisateurs dans la requête et retourne leurs planning
+ *     responses:
+ *       200:
+ *         description: Planning des users
+ *       404:
+ *         description: L'utilisateur n'a pas de planning ou n'existe pas
+ */
+router.get("/schedule/", twitchController.getScheduleFromUsernameStatic);
+
+/**
+ * @swagger
  * /twitch/schedule/{broadcasterId}:
  *   get:
  *     summary: Récupère le planning d'un utilisateur Twitch

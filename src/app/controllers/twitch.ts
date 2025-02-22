@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { checkAndRefreshToken } from "../middlewares/tokenCache";
-
+import { TwitchUser } from "../models/twitch.model";
+import { batchFetchSchedules, filterSuccessfulResults } from "../middlewares/twitch";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -125,6 +126,40 @@ const getScheduleInfos = async (req: Request, res: Response, next: NextFunction)
   }  
 };
 
+const getScheduleFromUsernameStatic = async (_req: Request, res: Response, next: NextFunction): Promise<any> =>{
+  try {
+    const twitchToken = await checkAndRefreshToken();
+    const api_client = process.env.TWITCH_CLIENT;
+
+    if(!api_client || !twitchToken?.access_token){
+        return res.status(400).json({ success: false, message:"Missing API KEY"});
+      }
+
+    const response = await fetch("https://api.twitch.tv/helix/users?login=Anthr0pophobe&login=rvflash_&login=Bazzbarge", {
+        method:"GET",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `Bearer ${twitchToken.access_token}`,
+            "Client-Id": api_client
+        },
+    });
+    const userData = await response.json();
+    if(!userData.data || userData.data.length === 0){
+      return res.status(404).json({success: false, message:"User not found."});
+    };
+
+    const broadcastIds = userData.data.map((elem: TwitchUser) => elem.id);
+    const results = await batchFetchSchedules(broadcastIds, twitchToken.access_token, api_client);
+    const fulteredResults = filterSuccessfulResults(results);
+    return res.status(200).json({ success: true, data:fulteredResults });
+  }
+    catch (error: unknown){
+      next(error);
+      const err = error as Error;
+      return res.status(400).json({ success: false, message: err.message });
+    }
+}
+
 const getScheduleFromUsername = async (req: Request, res: Response, next: NextFunction): Promise<any> =>{
   const twitchToken = await checkAndRefreshToken();
   const api_client = process.env.TWITCH_CLIENT;
@@ -137,7 +172,7 @@ const getScheduleFromUsername = async (req: Request, res: Response, next: NextFu
     if(!api_client || !twitchToken?.access_token){
       return res.status(400).json({ success: false, message:"Missing API KEY"});
     };
-    const userResponse = await fetch(`https://api.twitch.tv/helix/channels?broadcaster_id=${username}`, {
+    const userResponse = await fetch(`https://api.twitch.tv/helix/users?broadcaster_id=${username}`, {
       method:"GET",
       headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -178,10 +213,12 @@ const getScheduleFromUsername = async (req: Request, res: Response, next: NextFu
 }
 
 
+
 export default { 
   getLiveStatic,
   getLiveUser,
   getUserInfos,
   getScheduleInfos,
   getScheduleFromUsername,
+  getScheduleFromUsernameStatic
 };
