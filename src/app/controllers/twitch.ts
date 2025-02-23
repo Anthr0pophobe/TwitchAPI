@@ -64,6 +64,33 @@ const getLiveUser = async (req: Request, res: Response, next: NextFunction): Pro
   }  
 };
 
+
+const getUserInfosStatic = async (_req: Request, res: Response, next: NextFunction): Promise<any> => {
+  const twitchToken = await checkAndRefreshToken();
+  const api_client = process.env.TWITCH_CLIENT;
+  try {
+    if(!api_client || !twitchToken?.access_token){
+        return res.status(400).json({ success: false, message:"Missing API KEY"});
+      }
+
+    const response = await fetch(`https://api.twitch.tv/helix/users?login=Anthr0pophobe&login=rvflash_`, {
+        method:"GET",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `Bearer ${twitchToken.access_token}`,
+            "Client-Id": api_client
+        },
+    });
+    const data = await response.json();
+    return res.json({ success: true, message: data });
+
+  } catch (error: unknown) {
+      next(error);
+      const err = error as Error;
+      return res.status(200).json({ success: false, message: err.message });
+  }  
+};
+
 const getUserInfos = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const twitchToken = await checkAndRefreshToken();
   const api_client = process.env.TWITCH_CLIENT;
@@ -217,6 +244,7 @@ const getScheduleFromUsername = async (req: Request, res: Response, next: NextFu
 export default { 
   getLiveStatic,
   getLiveUser,
+  getUserInfosStatic,
   getUserInfos,
   getScheduleInfos,
   getScheduleFromUsername,

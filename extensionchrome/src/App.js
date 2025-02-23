@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import TwitchCard from "./components/TwitchCard";
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -7,7 +8,7 @@ const App = () => {
 
   const fetchData = () => {
     setLoading(true);
-    fetch("http://localhost:3008/api/twitch/islive")
+    fetch("http://localhost:3008/api/twitch/user/anthr0pophobe")
       .then((response) => response.json())
       .then((json) => {
         if (json.success && json.message.data.length === 0) {
@@ -22,19 +23,14 @@ const App = () => {
         setLoading(false);
       });
   };
-
+  
   useEffect(() => {
-    // Init call
     fetchData();
-    // Refresh every minutes
-    const interval = setInterval(fetchData, 60000);
-    // Cleanup 
-    return () => clearInterval(interval);
   }, []);
+  
 
   return (
-    <div style={{ width: 300, padding: 20 }}>
-      <h2>📡 Données API</h2>
+    <div className=" p-4">
       {loading ? (
         <p>Chargement...</p>
       ) : error ? (
@@ -42,9 +38,7 @@ const App = () => {
       ) : data.length === 0 ? (
         <p>Aucune donnée disponible pour le moment.</p>
       ) : (
-        <pre style={{ background: "#f4f4f4", padding: 10, borderRadius: 5 }}>
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <TwitchCard user={data[0]}/>
       )}
     </div>
   );
