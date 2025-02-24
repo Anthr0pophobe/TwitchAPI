@@ -56,6 +56,8 @@ router.get("/isLive/:username", twitchController.getLiveUser);
  */
 router.get("/user/:username", twitchController.getUserInfos);
 
+router.get("/users/", twitchController.getUserInfosStatic);
+
 /**
  * @swagger
  * /twitch/schedule:
