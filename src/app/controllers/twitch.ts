@@ -14,7 +14,7 @@ const getLiveStatic = async (_req: Request, res: Response, next: NextFunction): 
         return res.status(400).json({ success: false, message:"Missing API KEY"});
       }
 
-    const response = await fetch("https://api.twitch.tv/helix/streams?user_login=Anthr0pophobe&user_login=rvflash_&user_login=Bazzbarge", {
+    const response = await fetch("https://api.twitch.tv/helix/streams?user_login=Anthr0pophobe&user_login=rvflash_&user_login=bmsjoel", {
         method:"GET",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
