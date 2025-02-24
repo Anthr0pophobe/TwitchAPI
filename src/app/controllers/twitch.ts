@@ -73,7 +73,7 @@ const getUserInfosStatic = async (_req: Request, res: Response, next: NextFuncti
         return res.status(400).json({ success: false, message:"Missing API KEY"});
       }
 
-    const response = await fetch(`https://api.twitch.tv/helix/users?login=Anthr0pophobe&login=rvflash_`, {
+    const response = await fetch(`https://api.twitch.tv/helix/users?login=Anthr0pophobe&login=rvflash_&login=Bazzbarge`, {
         method:"GET",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

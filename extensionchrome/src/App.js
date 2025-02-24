@@ -8,7 +8,7 @@ const App = () => {
 
   const fetchData = () => {
     setLoading(true);
-    fetch("http://localhost:3008/api/twitch/user/anthr0pophobe")
+    fetch("http://localhost:3008/api/twitch/users")
       .then((response) => response.json())
       .then((json) => {
         if (json.success && json.message.data.length === 0) {
@@ -38,7 +38,7 @@ const App = () => {
       ) : data.length === 0 ? (
         <p>Aucune donnée disponible pour le moment.</p>
       ) : (
-        <TwitchCard user={data[0]}/>
+        data.map((elem)=><TwitchCard user={elem}/>)
       )}
     </div>
   );

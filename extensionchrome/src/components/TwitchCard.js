@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@mui/material";
-import LiveCard from "./LiveCard";
 
 const TwitchCard = ({ user }) => {
 	const [isLive, setIsLive] = useState(false);
@@ -23,33 +22,70 @@ const TwitchCard = ({ user }) => {
 				return () => clearInterval(interval);
 		}, [user.id]);
 
+    const handleCardClick = () =>{
+      if(isLive){
+        window.open(`https://twitch.tv/${user.display_name}`, '_blank');
+      }
+    }
   return (
-		<div className="flex">
-    <Card className="w-64 shadow-lg rounded-xl p-4 " style={{backgroundColor:"oklch(0.967 0.001 286.375)"}}>
-      <CardContent className="flex flex-col items-center">
-        {/* Affichage en cercle pour les "partner" */}
-          <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-700">
-            <img src={user.profile_image_url} alt={user.display_name} className="w-full h-full object-cover" />
+		<div className="flex pr-2 pb-2">
+      <Card 
+        className={
+          `h-20 w-2/5 shadow-lg rounded-xl flex relative transition 
+          ${isLive ? "cursor-pointer hover:opacity-50 hover:shadow-sm" : ""}`}
+        style={{ backgroundColor: "oklch(0.967 0.001 286.375)" }}
+        onClick={handleCardClick}
+      >
+        <CardContent className="flex flex-row items-center space-x-3 w-full">
+          {/* Image de profil en cercle */}
+          {
+            isLive?(
+              <div 
+              className="w-32 h-32 rounded-full overflow-hidden bg-gray-700 shadow-2xl animate-pulse flex-shrink-0 relative"
+              style={{ backgroundColor: 'green', boxShadow: "0px 0px 20px green", left:-30}}
+              >
+                <img 
+                  src={user.profile_image_url} 
+                  alt={user.display_name} 
+                  className="w-full h-full object-cover" 
+                />
+            </div>
+            ):
+            (
+              <div 
+              className="w-32 h-32 rounded-full overflow-hidden bg-gray-700 flex-shrink-0 relative"
+              style={{boxShadow: "0px 0px 20px grey",left:-30}}>
+                <img
+                  src={user.profile_image_url} 
+                  alt={user.display_name} 
+                  className="w-full h-full object-cover" 
+                />
+              </div>
+            )
+          }
+          <div className="flex flex-col">
+            <p className="text-m font-semibold">{user.display_name}</p>
+            {
+              isLive &&(
+                <div className="flex flex-col ">
+                  <p className="text-sm font-semibold truncate">{streamData.title}</p>
+                  <p className="text-sm justify-start">{streamData.game_name}</p>
+                </div>
+              )
+            }
           </div>
-        <p className="mt-3 text-lg font-semibold">{user.display_name}</p>
-				{isLive && (
-					<>
-						<div className="mt-2 w-4 h-4 rounded-full shadow-2xl animate-pulse" style={{backgroundColor:'red', boxShadow: "0px 0px 12px red"}}></div>
-						<p className="mt-3 text-lg font-semibold overflow-auto">{streamData.title}</p>
-						<p className="mt-1 text-sm">{streamData.game_name}</p>
-						<p className="mt-1 text-sm">{streamData.viewer_count} viewers</p>
-					</>
-        )}
-        {/* Espace vide pour ajouter d'autres infos plus tard */}
-        <div className="h-10">
-					
-				</div>
-				
-        
-      </CardContent>
-    </Card>
-		<LiveCard liveData={streamData} username={user.login}/>
-	</div>
+          {isLive && (
+            <>
+              <div className="flex flex-col">
+                {/* <p className="text-sm">{streamData.viewer_count} viewers</p> */}
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+      {/* Carte du Live (optionnel) */}
+      {/* <LiveCard liveData={streamData} username={user.login} /> */}
+  </div>
   );
 };
 
