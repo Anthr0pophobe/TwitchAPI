@@ -30,7 +30,7 @@ const App = () => {
   
 
   return (
-    <div className=" p-4">
+    <div className="p-4" style={{backgroundColor:"#FEF3E2"}}>
       {loading ? (
         <p>Chargement...</p>
       ) : error ? (

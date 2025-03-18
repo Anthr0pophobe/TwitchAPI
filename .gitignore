@@ -25,3 +25,6 @@ yarn-error.log*
 .env
 node_modules
 dist
+# Extension keys
+build.pem
+build.crx
