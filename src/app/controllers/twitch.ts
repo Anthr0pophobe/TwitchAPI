@@ -36,32 +36,53 @@ const getLiveStatic = async (_req: Request, res: Response, next: NextFunction): 
 const getLiveUser = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const twitchToken = await checkAndRefreshToken();
   const api_client = process.env.TWITCH_CLIENT;
-  const {
-    params:{
-      username
-    }
-  } = req;
-  try {
-    if(!api_client || !twitchToken?.access_token){
-        return res.status(400).json({ success: false, message:"Missing API KEY"});
-      }
+  const { params: { username } } = req;
 
-    const response = await fetch(`https://api.twitch.tv/helix/streams?user_login=${username}`, {
-        method:"GET",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": `Bearer ${twitchToken.access_token}`,
-            "Client-Id": api_client
-        },
+  try {
+    if (!api_client || !twitchToken?.access_token) {
+      return res.status(400).json({ success: false, message: "Missing API KEY" });
+    }
+
+    const userResponse = await fetch(`https://api.twitch.tv/helix/streams?user_login=${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${twitchToken.access_token}`,
+        "Client-Id": api_client
+      },
     });
-    const data = await response.json();
-    return res.status(200).json({ success: true, message: data });
+
+    const userData = await userResponse.json();
+
+    if (!userData.data || userData.data.length === 0) {
+      return res.status(404).json({ success: false, message: "User not found or not live." });
+    }
+
+    const streamInfo = userData.data[0];
+
+    if (!streamInfo.game_id) {
+      return res.status(200).json({ success: true, stream: streamInfo, game: null });
+    }
+
+    const gameResponse = await fetch(`https://api.twitch.tv/helix/games?id=${streamInfo.game_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${twitchToken.access_token}`,
+        "Client-Id": api_client
+      },
+    });
+
+    const gameData = await gameResponse.json();
+    const gameInfo = gameData.data?.length > 0 ? gameData.data[0] : null;
+
+    return res.status(200).json({ success: true, stream: streamInfo, game: gameInfo });
 
   } catch (error: unknown) {
-      next(error);
-      const err = error as Error;
-      return res.json({ success: false, message: err.message });
-  }  
+    next(error);
+    const err = error as Error;
+    return res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 
