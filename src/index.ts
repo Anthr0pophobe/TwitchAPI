@@ -3,9 +3,10 @@ import { getTokenFromDB } from "./app/middlewares/mongo";
 import { setCachedToken } from "./app/middlewares/tokenCache";
 import apiRoutes from "./app/routes/index";
 import cors from "cors";
+import { subscribeToTwitchWebhook } from './app/services/twitchWebhookService';  // Import du service d'abonnement
 
 const app = express();
-const port = 3008   ;
+const port = 3008;
 app.use(cors());
 
 // load token from mongo
@@ -16,20 +17,21 @@ const loadToken = async () => {
             access_token: tokenFromDB.access_token,
             expires_at: tokenFromDB.expires_at,
         });
-        console.log("Token loaded");
+        console.log("✅ Token chargé !");
     } else {
-        console.warn("No token found !");
+        console.warn("⚠️ Aucun token trouvé !");
     }
 };
 loadToken();
 
-app.get('/', (_req, res) => {
-	res.json({ message: 'APIREST' });
+app.get("/", (_req, res) => {
+    res.json({ message: "APIREST" });
 });
 
-app.use('/api', apiRoutes);
+app.use("/api", apiRoutes);
 
-app.listen(port, () =>{
-    console.log(`Server live on http://localhost:${port}`);
+subscribeToTwitchWebhook();
+
+app.listen(port, () => {
+    console.log(`Serveur démarré sur le port :${port}`);
 });
-

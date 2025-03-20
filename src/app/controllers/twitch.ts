@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { checkAndRefreshToken } from "../middlewares/tokenCache";
 import { TwitchUser } from "../models/twitch.model";
 import { batchFetchSchedules, filterSuccessfulResults } from "../middlewares/twitch";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -260,6 +261,24 @@ const getScheduleFromUsername = async (req: Request, res: Response, next: NextFu
   }
 }
 
+const handleTwitchWebhook = (req: Request, res: Response) =>{
+  const event = req.body.event;
+
+  // Vérification du type d'événement
+  if (event) {
+      if (event.type === "live") {
+          console.log(`🎥 Le stream de ${event.broadcaster_user_name} est maintenant EN LIGNE !`);
+          // Ajoute ici ton code pour notifier tes clients ou effectuer des actions spécifiques
+      } else if (event.type === "offline") {
+          console.log(`🛑 Le stream de ${event.broadcaster_user_name} est maintenant HORS LIGNE.`);
+          // Idem pour le cas "offline"
+      }
+  }
+
+  // Twitch envoie un status 200 pour indiquer que le webhook a bien été traité
+  res.sendStatus(200);
+}
+
 
 
 export default { 
@@ -269,5 +288,6 @@ export default {
   getUserInfos,
   getScheduleInfos,
   getScheduleFromUsername,
-  getScheduleFromUsernameStatic
+  getScheduleFromUsernameStatic,
+  handleTwitchWebhook,
 };

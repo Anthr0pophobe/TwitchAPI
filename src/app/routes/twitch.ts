@@ -1,5 +1,6 @@
 import { Router } from "express";
 import twitchController from "../controllers/twitch";
+import { verifyTwitchWebhookSignature } from '../middlewares/verifyWebhookSignature';
 
 const router = Router();
 
@@ -56,6 +57,17 @@ router.get("/isLive/:username", twitchController.getLiveUser);
  */
 router.get("/user/:username", twitchController.getUserInfos);
 
+/**
+ * @swagger
+ * /twitch/user/:
+ *   get:
+ *     summary: Récupère les informations d'une series d'utilisateur Twitch prédéfinie
+ *     responses:
+ *       200:
+ *         description: Informations des utilisateurs récupérées avec succès
+ *       404:
+ *         description: Utilisateurs non trouvé
+ */
 router.get("/users/", twitchController.getUserInfosStatic);
 
 /**
@@ -90,5 +102,7 @@ router.get("/schedule/", twitchController.getScheduleFromUsernameStatic);
  *         description: Aucun planning trouvé pour cet utilisateur
  */
 router.get("/schedule/:broadcasterId", twitchController.getScheduleInfos);
+
+router.post('/webhooks/callback', verifyTwitchWebhookSignature, twitchController.handleTwitchWebhook);
 
 export default router;
