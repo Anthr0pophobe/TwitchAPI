@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { MongoClient, ServerApiVersion } from 'mongodb';
-const uri = `mongodb+srv://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@test1.0pe33.mongodb.net/?retryWrites=true&w=majority&appName=test1`;
+const uri = `mongodb+srv://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@twitchapi.v2duf.mongodb.net/?retryWrites=true&w=majority&appName=TwitchAPI`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
