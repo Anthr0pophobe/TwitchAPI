@@ -55,7 +55,7 @@ const TwitchCard = ({ user }) => {
           isHovered && isLive ? "card-hover" : "card-normal"
         }`}
         style={{
-          backgroundColor: isHovered && isLive ? "#FA4032" : "#FAB12F",
+          backgroundColor: isHovered && isLive ? "#FA4032" : "#cc33ff",
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

@@ -30,16 +30,27 @@ const App = () => {
   
 
   return (
-    <div className="p-4" style={{backgroundColor:"#FEF3E2"}}>
-      {loading ? (
-        <p>Chargement...</p>
-      ) : error ? (
-        <p style={{ color: "red" }}>{error}</p>
-      ) : data.length === 0 ? (
-        <p>Aucune donnée disponible pour le moment.</p>
-      ) : (
-        data.map((elem)=><TwitchCard user={elem}/>)
-      )}
+    <div>
+      <header>
+      <h1 className="p-3 text-center font-bold text-purple-200 border-purple-900 rounded-t-md" style={{backgroundColor:"#a300cc"}}>Twitch API</h1>
+      </header>
+      <div className="p-4" style={{backgroundColor:"#eeccff"}}>
+        {loading ? (
+          <p>Chargement...</p>
+        ) : error ? (
+          <p style={{ color: "red" }}>{error}</p>
+        ) : data.length === 0 ? (
+          <p>Aucune donnée disponible pour le moment.</p>
+        ) : (
+          data.map((elem)=><TwitchCard user={elem}/>)
+        )}
+      </div>
+      <footer className="p-5 text-purple-200 border-purple-900 rounded-b-md" style={{backgroundColor:"#a300cc"}}>
+        <ul>
+          <li>Anthropophobe</li>
+          <li>Suto</li>
+        </ul>
+      </footer>
     </div>
   );
 }
